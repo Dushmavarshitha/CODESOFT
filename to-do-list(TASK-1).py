@@ -1,69 +1,54 @@
 import tkinter as tk
 from tkinter import messagebox
 
-class Calculator(tk.Tk):
-    def __init__(self):
-        super().__init__()
-        self.title("Calculator")
-        self.geometry("300x150")
-        
-        self.equation = tk.StringVar()
-        self.create_widgets()
-        self.display.bind("<Return>", self.on_enter)
+class TodoListApp:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("To-Do List App")
+        self.root.configure(bg="grey")
 
-    def create_widgets(self):
-        # Display field for the equation
-        self.display = tk.Entry(self, textvariable=self.equation, font=('Arial', 24), borderwidth=3, relief="ridge")
-        self.display.grid(row=0, column=0, columnspan=6, pady=2, padx=2)
-        
-        # Operator buttons
-        buttons = [
-            {'text': '+', 'row': 2, 'column': 0},
-            {'text': '-', 'row': 2, 'column': 1},
-            {'text': '*', 'row': 2, 'column': 2},
-            {'text': '/', 'row': 2, 'column': 3},
-            {'text': 'C', 'row': 2, 'column': 4},
-            {'text': '=', 'row': 2, 'column': 5}
-        ]
-        
-        for button in buttons:
-            self.create_button(button)
-        
-        # Result textbox
-        self.result_textbox = tk.Text(self, height=1, width=24, font=('Arial', 24), borderwidth=3, relief="ridge")
-        self.result_textbox.grid(row=1, column=0, columnspan=6, pady=5, padx=5)
-    
-    def create_button(self, button):
-        action = lambda text=button['text']: self.on_button_click(text)
-        b = tk.Button(self, text=button['text'], font=('Arial', 18), command=action)
-        b.grid(row=button['row'], column=button['column'], sticky="nsew", padx=2, pady=2, columnspan=button.get('columnspan', 1))
-        
-        # Make the buttons expand when the window is resized
-        self.grid_rowconfigure(button['row'], weight=1)
-        self.grid_columnconfigure(button['column'], weight=1)
-    
-    def on_enter(self, event):
-        try:
-            result = eval(self.equation.get())
-            self.result_textbox.delete(1.0, tk.END)
-            self.result_textbox.insert(tk.END, result)
-        except Exception as e:
-            messagebox.showerror("Error", f"Invalid input: {e}")
-    
-    def on_button_click(self, char):
-        if char == 'C':
-            self.equation.set("")
-            self.result_textbox.delete(1.0, tk.END)
-        elif char == '=':
-            try:
-                result = eval(self.equation.get())
-                self.result_textbox.delete(1.0, tk.END)
-                self.result_textbox.insert(tk.END, result)
-            except Exception as e:
-                messagebox.showerror("Error", f"Invalid input: {e}")
+        # Initialize tasks list
+        self.tasks = []
+        root.geometry('330x400')
+
+        # Create GUI elements
+        self.task_input = tk.Entry(self.root, width=50,bg="pink")
+        self.task_input.grid(row=0, column=0,columnspan=2, padx=10, pady=10)
+
+        self.add_task_button = tk.Button(self.root, text="Add Task", command=self.add_task,bg="violet")
+        self.add_task_button.grid(row=1, column=0, columnspan=2,padx=10, pady=10)
+
+        self.task_listbox = tk.Listbox(self.root, height=15, width=50,bg="navajowhite")
+        self.task_listbox.grid(row=2, column=0, columnspan=2, padx=10, pady=10)
+
+        self.delete_task_button = tk.Button(self.root, text="Delete Task", command=self.delete_task,bg="tan")
+        self.delete_task_button.grid(row=3, column=0, padx=10, pady=10)
+
+        self.clear_tasks_button = tk.Button(self.root, text="Clear All Tasks", command=self.clear_tasks,bg="lightsalmon")
+        self.clear_tasks_button.grid(row=3, column=1, padx=10, pady=10)
+
+    def add_task(self):
+        task = self.task_input.get()
+        if task:
+            self.tasks.append(task)
+            self.task_listbox.insert(tk.END, task)
+            self.task_input.delete(0, tk.END)
         else:
-            self.equation.set(self.equation.get() + char)
-            
+            messagebox.showwarning("Warning", "Please enter a task.")
+
+    def delete_task(self):
+        try:
+            index = self.task_listbox.curselection()[0]
+            self.task_listbox.delete(index)
+            del self.tasks[index]
+        except IndexError:
+            messagebox.showwarning("Warning", "Please select a task to delete.")
+
+    def clear_tasks(self):
+        self.tasks = []
+        self.task_listbox.delete(0, tk.END)
+
 if __name__ == "__main__":
-    app = Calculator()
-    app.mainloop()
+    root = tk.Tk()
+    app = TodoListApp(root)
+    root.mainloop()
