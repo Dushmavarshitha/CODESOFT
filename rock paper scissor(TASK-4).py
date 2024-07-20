@@ -1,25 +1,25 @@
 import random
 
-def determine_winner(user_choice, computer_choice):
+def game(user, computer):
     # Rock beats scissors, scissors beat paper, paper beats rock
-    if user_choice == computer_choice:
+    if user== computer:
         return "It's a tie!"
-    elif (user_choice == 'rock' and computer_choice == 'scissors') or \
-         (user_choice == 'scissors' and computer_choice == 'paper') or \
-         (user_choice == 'paper' and computer_choice == 'rock'):
+    elif (user == 'rock' and computer== 'scissors') or\
+         (user== 'scissors' and computer== 'paper') or\
+         (user== 'paper' and computer== 'rock'):
         return "You win!"
     else:
         return "You lose!"
 
 def main():
-    print("Welcome to Rock-Paper-Scissors Game!")
+    print("game between you and computer on rock,paper,scissors ")
     choices = ['rock', 'paper', 'scissors']
     user_score = 0
     computer_score = 0
     
     play_again = True
     while play_again:
-        print("\nChoose one: rock, paper, scissors")
+        print("enter one of those names: rock, paper, scissors")
         user_choice = input("Enter your choice: ").lower()
         
         while user_choice not in choices:
@@ -31,7 +31,7 @@ def main():
         print(f"\nYou chose: {user_choice}")
         print(f"Computer chose: {computer_choice}")
         
-        result = determine_winner(user_choice, computer_choice)
+        result =game(user_choice, computer_choice)
         print(result)
         
         if result == "You win!":
